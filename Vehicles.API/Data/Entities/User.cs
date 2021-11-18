@@ -40,7 +40,7 @@ namespace Vehicles.API.Data.Entities
         public string ImageFullPath => ImageId == Guid.Empty
 
                 ? $"https://localhost:44309/images/noimage.png"
-                : $"https://vehicleszulu.blob.core.windows.net/users/{ImageId}";
+                : $"https://vehiclesalejog.blob.core.windows.net/users/{ImageId}";
            
 
        
@@ -56,7 +56,8 @@ namespace Vehicles.API.Data.Entities
 
         public ICollection<Vehicle> Vehicles { get; set; }
 
-       
+        [Display(Name = "# Vehiculos")]
+        public int VehiclesCount => Vehicles ==null ? 0 :Vehicles.Count;
 
     }
 }

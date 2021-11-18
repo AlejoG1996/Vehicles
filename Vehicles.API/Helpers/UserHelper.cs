@@ -46,11 +46,33 @@ namespace Vehicles.API.Helpers
             }
         }
 
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            return await _userManager.DeleteAsync(user);
+        }
+
         public  async Task<User> GetUserAsync(string email)
         {
             return await _context.Users
+               .Include(x => x.DocumentType)
+               .Include(x => x.Vehicles)
+               .ThenInclude(x => x.VehiclePhotos)
+               .Include(x => x.Vehicles)
+               .ThenInclude(x => x.Histories)
+               .ThenInclude(x => x.Details)
+               .FirstOrDefaultAsync(x => x.Email == email);
+        }
+
+        public async Task<User> GetUserAsync(Guid id)
+        {
+            return await _context.Users
                 .Include(x => x.DocumentType)
-                .FirstOrDefaultAsync(x => x.Email == email);
+                .Include(x => x.Vehicles)
+                .ThenInclude(x => x.VehiclePhotos)
+                .Include(x => x.Vehicles)
+                .ThenInclude(x => x.Histories)
+                .ThenInclude(x => x.Details)
+                .FirstOrDefaultAsync(x => x.Id == id.ToString());
         }
 
         public async  Task<bool> IsUserInRoleAsync(User user, string roleName)
@@ -66,6 +88,19 @@ namespace Vehicles.API.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            User currentUser = await GetUserAsync(user.Email);
+            currentUser.LastName = user.LastName;
+            currentUser.FirstName = user.FirstName;
+            currentUser.DocumentType = user.DocumentType;
+            currentUser.Document = user.Document;
+            currentUser.Address = user.Address;
+            currentUser.ImageId = user.ImageId;
+            currentUser.PhoneNumber = user.PhoneNumber;
+            return await _userManager.UpdateAsync(currentUser);
         }
     }
 }
