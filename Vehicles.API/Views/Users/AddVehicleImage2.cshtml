@@ -1,0 +1,89 @@
+﻿@model Vehicles.API.Models.VehiclePhotoViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/DetailEditStyle.css" />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="AddVehicleImage" enctype="multipart/form-data">
+
+            <input type="hidden" asp-for="VehicleId" />
+            <div class="viewphoto">
+                <img id="imagenPrevisualizacion" src="~/images/noimage.png" />
+            </div>
+            <h2>Agregar Foto </h2>
+            <br />
+            <div asp-validation-summary="ModelOnly" class="text-danger errorinicio"></div>
+
+            <div class="form-group3">
+
+
+                <input asp-for="ImageFile" class="form-control" type="file" id="real-file" hidden="hidden" accept="image/*" />
+                <button type="button" id="custom-button">Subir Foto</button>
+                <span asp-validation-for="ImageFile" class="text-danger" id="custom-text">sin foto</span>
+                <script type="text/javascript">
+                            const realFileBtn = document.getElementById("real-file");
+                            const customBtn = document.getElementById("custom-button");
+                            const customTxt = document.getElementById("custom-text");
+                            var img = document.getElementById("imagenPrevisualizacion");
+
+                            customBtn.addEventListener("click", function () {
+                                realFileBtn.click();
+                            });
+
+                            realFileBtn.addEventListener("change", function () {
+                                if (realFileBtn.value) {
+                                    customTxt.innerHTML = realFileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+                                } else {
+                                    customTxt.innerHTML = "No se ha cargado ninguna imagen";
+                                }
+                            })
+
+                            const $seleccionArchivos = document.querySelector("#real-file"),
+                                $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+
+                            // Escuchar cuando cambie
+                            $seleccionArchivos.addEventListener("change", () => {
+                                // Los archivos seleccionados, pueden ser muchos o uno
+                                const archivos = $seleccionArchivos.files;
+                                // Si no hay archivos salimos de la función y quitamos la imagen
+                                if (!archivos || !archivos.length) {
+                                    $imagenPrevisualizacion.src = "";
+                                    return;
+                                }
+
+
+                                var filePath = realFileBtn.value;
+                                var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
+                                if (!allowedExtensions.exec(filePath)) {
+
+
+
+                                } else {
+                                    // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+                                    const primerArchivo = archivos[0];
+                                    // Lo convertimos a un objeto de tipo objectURL
+                                    const objectURL = URL.createObjectURL(primerArchivo);
+                                    // Y a la fuente de la imagen le ponemos el objectURL
+                                    $imagenPrevisualizacion.src = objectURL;
+                                }
+                            });
+                </script>
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" value="" class="btn btn-success"><span>Guardar</span><span><i class="fas fa-download"></i></span> </button>
+                
+                <a asp-action="EditVehiclePhoto" asp-route-id="@Model.VehicleId" class="btn btn-secondary"><span>Regresar</span><span><i class="fas fa-undo"></i></span></a>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

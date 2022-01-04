@@ -1,0 +1,104 @@
+﻿
+/*MENU*/
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Roboto:wght@300;400;500&display=swap');
+
+.menu {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.contenedor {
+    display: none !important;
+}
+
+footer {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+
+body {
+    background-image: linear-gradient(to right, #0a0a0a, #151515, #1d1d1d, #252525, #2e2e2e) !important;
+    background-repeat: no-repeat;
+    background-size: cover !important;
+}
+
+.container {
+    width: 90% !important;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+}
+
+.contenedor2 {
+    text-align: center;
+    width: 95% !important;
+    height: 60px;
+    background-image: url("/images/banner.png");
+    background-repeat: no-repeat;
+    background-size: cover !important;
+    border-radius:5px;
+    padding-bottom:12px;
+}
+
+.contenedor3 {
+    width: 95% !important;
+    height: 200px;
+    background-color:white;
+    border-radius: 5px;
+    margin: 12px;
+}
+
+    .contenedor3 p:first-child {
+       
+        font-family: 'Oswald', sans-serif !important;
+        font-size:19px!important;
+        padding-top:16px !important;
+    }
+
+
+    .contenedor3 p {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+@media screen and (max-width:550px) {
+
+    .contenedor3 p {
+        font-size: 11px !important;
+    }
+    .contenedor3 p:first-child {
+        font-family: 'Oswald', sans-serif !important;
+        font-size: 15px !important;
+        padding-top: 16px !important;
+    }
+
+    
+   
+   
+}
+
+
+@media screen and (max-width:430px) {
+
+    .contenedor3 p {
+        font-size: 8.3px !important;
+    }
+
+        .contenedor3 p:first-child {
+            font-family: 'Oswald', sans-serif !important;
+            font-size: 10px !important;
+            padding-top: 17px !important;
+        }
+}
+
+
+.centrado {
+    padding-top:8px!important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    color: #FF3600 !important;
+    font-family: 'Oswald', sans-serif !important;
+}

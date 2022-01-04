@@ -1,0 +1,6 @@
+﻿@media screen and (max-width:500px) {
+    .form-group{
+        display:block!important;
+        width:100% !important;
+    }
+}

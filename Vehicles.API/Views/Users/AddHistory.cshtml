@@ -3,27 +3,74 @@
 @{
     ViewData["Title"] = "Create";
 }
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/DetailStyle.css" />
 
-<h2>Crear</h2>
 
-<h4>Historia</h4>
-<hr />
-<div class="row">
+
+<div class="row_1">
     <div class="col-md-12">
         <form asp-action="AddHistory" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="VehicleId" />
 
-            <partial name="_History" />
+            <h2>Nueva Historia</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger errorinicio"></div>
 
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                <a asp-action="DetailsVehicle" asp-route-id="@Model.VehicleId" class="btn btn-success">Regresar</a>
+
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="Mileage" class="control-label"></label>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Mileage" class="form-control" />
+                        </div>
+                        <div>
+                            <span asp-validation-for="Mileage" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="Remarks" class="control-label"></label>
+                        </div>
+                        <div class="form-group">
+                            <textarea asp-for="Remarks" class="form-control"></textarea>
+                        </div>
+                        <div>
+                            <span asp-validation-for="Remarks" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+
+
+                        <div class="form-group">
+                            <button type="submit" value="" class="btn btn-success"><span>Guardar</span><span><i class="fas fa-download"></i></span> </button>
+                            <a asp-action="DetailsVehicle" asp-route-id="@Model.VehicleId" class="btn btn-secondary"><span>Regresar</span><span><i class="fas fa-undo"></i></span></a>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
             </div>
+
         </form>
     </div>
 </div>
-
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

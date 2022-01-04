@@ -4,25 +4,51 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Crear</h1>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/ProceduresStyle.css" />
 
-<h4>Procedimiento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <partial name="_Procedure" />
 
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-success">Regresar</a>
-            </div>
-        </form>
+<br />
+<div class="content_form">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create">
+                <h4>Nuevo Procedimiento</h4>
+                <div asp-validation-summary="ModelOnly" class="text-danger errorinicio"></div>
+                <div class="form-group2">
+                    <div class="form-group">
+                        <input asp-for="Description" class="form-control" placeholder="Procedimiento" />
+                    </div>
+                    <div>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+
+
+                    </div>
+
+                </div>
+                <div class="form-group2">
+                    <div class="form-group">
+                        <input asp-for="Price" class="form-control" placeholder="Precio" />
+                    </div>
+                    <div>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <button type="submit" value="" class="btn btn-success"><span>Guardar</span><span><i class="fas fa-download"></i></span> </button>
+                    <a asp-action="Index" class="btn btn-secondary"><span>Regresar</span><span><i class="fas fa-undo"></i></span></a>
+
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

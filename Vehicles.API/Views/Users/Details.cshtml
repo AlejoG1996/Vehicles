@@ -5,69 +5,173 @@
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
-<h2>Vehículos</h2>
-
-<div>
-    <h4>Usuario</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-8">
-            <dl class="row">
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.FullName)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.FullName)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.DocumentType.Description)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.DocumentType.Description)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Document)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Document)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Address)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Address)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.PhoneNumber)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.PhoneNumber)
-                </dd>
-            </dl>
-        </div>
-        <div class="col-md-4">
-            <img src="@Model.ImageFullPath" style="width: 200px; height: 200px; border-radius: 150px;" />
-        </div>
-    </div>
-</div>
-<div>
-    <a asp-action="AddVehicle" asp-route-id="@Model.Id" class="btn btn-primary">Adicionar Vehículo</a>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar Usuario</a>
-    <a asp-action="Index" class="btn btn-success">Regresar</a>
-</div>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/DetailStyle.css" />
+<br />
 <br />
 
+<div class="container_two">
+
+
+    <div>
+        <h4 class="panel-title2">Usuario</h4>
+     
+        <div class="row">
+            <div class="col-md-8 info">
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.FullName)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.DocumentType.Description)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.DocumentType.Description)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Document)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Document)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Address)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Address)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.PhoneNumber)
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-4 foto">
+                <img src="@Model.ImageFullPath" id="imguser" />
+            </div>
+            <br />
+            
+            <div class="botones">
+
+                <a id="btn1" asp-action="AddVehicle" asp-route-id="@Model.Id" class="btn btn-link"><span>Adicionar Vehículo</span><span><i class="fas fa-plus"></i></span></a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-link"><span>Editar Usuario</span><span><i class="fas fa-edit"></i></span></a>
+                <a id="btn2" asp-action="Index" class="btn btn-link"><span>Regresar</span><span><i class="fas fa-undo-alt"></i></span></a>
+            </div>
+        </div>
+    </div>
+    <br />
+    
+    <br />
+</div>
+<br />
+<br />
+<br />
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vehículos</h3>
+                <div class="multiselect">
+                    <div class="selectBox" onclick="showCheckboxes()">
+                        <select>
+                            <option>Filtro</option>
+                        </select>
+                        <div class="overSelect"></div>
+                    </div>
+                    <div id="checkboxes">
+                        <label for="one"><input type="checkbox" id="one" checked /> @Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().Plaque)</label>
+                        <label for="two"><input type="checkbox" id="two" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().VehicleType.Description)</label>
+                        <label for="three"><input type="checkbox" id="three" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().Brand.Description) </label>
+                        <label for="four"><input type="checkbox" id="four" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().Line) </label>
+                        <label for="five"><input type="checkbox" id="five" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().Model) </label>
+                        <label for="six"><input type="checkbox" id="six" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().HistoriesCount) </label>
+                        <label for="seven"><input type="checkbox" id="seven" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().VehiclePhotosCount)</label>
+                        <label for="eight"><input type="checkbox" id="eight" checked />@Html.DisplayNameFor(model => model.Vehicles.FirstOrDefault().ImageFullPath)</label>
+                       
+                    </div>
+                </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+                <script>
+                    var expanded = false;
+                    function showCheckboxes() {
+                        var checkboxes = document.getElementById("checkboxes");
+                        if (!expanded) {
+                            checkboxes.style.display = "block";
+                            expanded = true;
+                        } else {
+                            checkboxes.style.display = "none";
+                            expanded = false;
+                        }
+                    }
+
+
+
+                    $("#one").on("click", function () {
+
+                        $("th:nth-child(1)").toggle();
+                        $('td:nth-child(1)').toggle();
+
+                    });
+
+                    $("#two").on("click", function () {
+
+                        $("th:nth-child(2)").toggle();
+                        $('td:nth-child(2)').toggle();
+
+                    });
+
+                    $("#three").on("click", function () {
+
+                        $("th:nth-child(3)").toggle();
+                        $('td:nth-child(3)').toggle();
+
+                    });
+
+                    $("#four").on("click", function () {
+
+                        $("th:nth-child(4)").toggle();
+                        $('td:nth-child(4)').toggle();
+
+                    });
+
+                    $("#five").on("click", function () {
+
+                        $("th:nth-child(5)").toggle();
+                        $('td:nth-child(5)').toggle();
+
+                    });
+
+                    $("#six").on("click", function () {
+
+                        $("th:nth-child(6)").toggle();
+                        $('td:nth-child(6)').toggle();
+
+                    });
+                    $("#seven").on("click", function () {
+
+                        $("th:nth-child(7)").toggle();
+                        $('td:nth-child(7)').toggle();
+
+                    });
+                    $("#eight").on("click", function () {
+
+                        $("th:nth-child(8)").toggle();
+                        $('td:nth-child(8)').toggle();
+
+                    });
+                </script>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive table-striped" id="MyTable">
@@ -126,12 +230,17 @@
                                     @Html.DisplayFor(modelItem => item.VehiclePhotosCount)
                                 </td>
                                 <td>
-                                    <img src="@item.ImageFullPath" style="width:100px;height:100px;max-width: 100%; height: auto;" />
+                                    <img src="@item.ImageFullPath"  />
                                 </td>
                                 <td>
-                                    <a asp-action="EditVehicle" asp-route-id="@item.Id" class="btn btn-warning">Editar</a>
-                                    <a asp-action="DetailsVehicle" asp-route-id="@item.Id" class="btn btn-info">Historias<i class="glyphicon glyphicon-align-justify"></i></a>
-                                    <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog">Borrar</button>
+
+
+
+                                    <a asp-action="EditVehicle" asp-route-id="@item.Id" class="btn btn-warning"><span>Editar</span><span><i class="fas fa-edit"></i></span></a>
+                                    <a asp-action="DetailsVehicle" asp-route-id="@item.Id" class="btn btn-dark"><span>Historias</span><span><i class="fas fa-history"></i></span></a>
+                                    <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><span>Borrar</span><span><i class="fas fa-trash"></i></span></button>
+                                    <a asp-action="EditVehiclePhoto" asp-route-id="@item.Id" class="btn btn-warning"><span>Fotos</span><span><i class="fas fa-camera"></i></span></a>
+
                                 </td>
                             </tr>
                         }
@@ -141,7 +250,9 @@
         </div>
     </div>
 </div>
-
+<br />
+<br />
+<br />
 <partial name="_DeleteDialog" />
 
 @section Scripts {

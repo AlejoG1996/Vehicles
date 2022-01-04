@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Vehicles.API.Data;
 using Vehicles.API.Data.Entities;
 using Vehicles.API.Helpers;
 using Vehicles.API.Models;
 using Vehicles.Common.Enums;
+using Vehicles.Common.Models;
 
 namespace Vehicles.API.Controllers
 {
@@ -22,17 +24,17 @@ namespace Vehicles.API.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
-        
+        private readonly IMailHelper _mailHelper;
 
-        public UsersController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, 
-            IConverterHelper converterHelper, IBlobHelper blobHelper)
+        public UsersController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IConverterHelper converterHelper, 
+            IBlobHelper blobHelper, IMailHelper mailHelper)
         {
             _context = context;
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
-            
+            _mailHelper = mailHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -61,6 +63,43 @@ namespace Vehicles.API.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+             User usertwo = await _context.Users
+            .FirstOrDefaultAsync(x => x.Document == model.Document);
+                if (usertwo != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Documento de identidad ya esta registrado");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+
+                User usertwos = await _context.Users
+            .FirstOrDefaultAsync(x => x.Email == model.Email);
+                if (usertwos != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Email ya esta registrado");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
                 Guid imageId = Guid.Empty;
 
                 if (model.ImageFile != null)
@@ -68,10 +107,22 @@ namespace Vehicles.API.Controllers
                     imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                 }
 
+
                 User user = await _converterHelper.ToUserAsync(model, imageId, true);
                 user.UserType = UserType.User;
                 await _userHelper.AddUserAsync(user, "123456");
                 await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
+
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendMail(model.Email, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -103,6 +154,25 @@ namespace Vehicles.API.Controllers
         {
             if (ModelState.IsValid)
             {
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+               
                 Guid imageId = model.ImageId;
                 if (model.ImageFile != null)
                 {
@@ -126,14 +196,24 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
+
             User user = await _userHelper.GetUserAsync(Guid.Parse(id));
             if (user == null)
             {
                 return NotFound();
             }
+            try
+            {
+                await _blobHelper.DeleteBlobAsync(user.ImageId, "users");
+            }
+            catch { }
+
 
             
-                await _blobHelper.DeleteBlobAsync(user.ImageId, "users");
+                
+            
+
+            
             
 
             await _userHelper.DeleteUserAsync(user);
@@ -206,6 +286,29 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
+
+            string filename = "";
+            if (vehicleViewModel.ImageFile == null)
+            {
+
+                filename = "noexiste.png";
+            }
+            else
+            {
+                filename = vehicleViewModel.ImageFile.FileName;
+            }
+
+            if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+            {
+                ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                vehicleViewModel.Brands = _combosHelper.GetComboBrands();
+                vehicleViewModel.VehicleTypes = _combosHelper.GetComboVehicleTypes();
+                return View(vehicleViewModel);
+            }
+
+
+           
+
             Guid imageId = Guid.Empty;
             if (vehicleViewModel.ImageFile != null)
             {
@@ -273,7 +376,27 @@ namespace Vehicles.API.Controllers
             VehicleViewModel model = _converterHelper.ToVehicleViewModel(vehicle);
             return View(model);
         }
+        public async Task<IActionResult> EditVehiclePhoto(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            Vehicle vehicle = await _context.Vehicles
+                .Include(x => x.User)
+                .Include(x => x.Brand)
+                .Include(x => x.VehicleType)
+                .Include(x => x.VehiclePhotos)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            VehicleViewModel model = _converterHelper.ToVehicleViewModel(vehicle);
+            return View(model);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditVehicle(int id, VehicleViewModel vehicleViewModel)
@@ -287,6 +410,28 @@ namespace Vehicles.API.Controllers
             {
                 try
                 {
+                    string filename = "";
+                    if (vehicleViewModel.ImageFile == null)
+                    {
+
+                        filename = "noexiste.png";
+                    }
+                    else
+                    {
+                        filename = vehicleViewModel.ImageFile.FileName;
+                    }
+
+                    if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                    {
+                        ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                        vehicleViewModel.Brands = _combosHelper.GetComboBrands();
+                        vehicleViewModel.VehicleTypes = _combosHelper.GetComboVehicleTypes();
+                        return View(vehicleViewModel);
+                    }
+
+                   
+
+
                     Vehicle vehicle = await _converterHelper.ToVehicleAsync(vehicleViewModel, false);
                     _context.Vehicles.Update(vehicle);
                     await _context.SaveChangesAsync();
@@ -345,6 +490,8 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
+
+
             VehiclePhoto vehiclePhoto = await _context.VehiclePhotos
                 .Include(x => x.Vehicle)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -361,7 +508,7 @@ namespace Vehicles.API.Controllers
 
             _context.VehiclePhotos.Remove(vehiclePhoto);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(EditVehicle), new { id = vehiclePhoto.Vehicle.Id });
+            return RedirectToAction(nameof(EditVehiclePhoto), new { id = vehiclePhoto.Vehicle.Id });
         }
 
         public async Task<IActionResult> AddVehicleImage(int? id)
@@ -385,13 +532,52 @@ namespace Vehicles.API.Controllers
 
             return View(model);
         }
+        public async Task<IActionResult> AddVehicleImage2(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            Vehicle vehicle = await _context.Vehicles
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            VehiclePhotoViewModel model = new()
+            {
+                VehicleId = vehicle.Id
+            };
+
+            return View(model);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVehicleImage(VehiclePhotoViewModel model)
         {
             if (ModelState.IsValid)
             {
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                   
+                    return View(model);
+                }
+
+
                 Guid imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "vehiclephotos");
                 Vehicle vehicle = await _context.Vehicles
                     .Include(x => x.VehiclePhotos)
@@ -408,7 +594,7 @@ namespace Vehicles.API.Controllers
 
                 _context.Vehicles.Update(vehicle);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(EditVehicle), new { id = vehicle.Id });
+                return RedirectToAction(nameof(EditVehiclePhoto), new { id = vehicle.Id });
             }
 
             return View(model);

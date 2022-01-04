@@ -5,72 +5,179 @@
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
-<h2>Historia</h2>
-
-<div>
-    <h4>Vehiculo</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-8">
-            <dl class="row">
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.VehicleType.Description)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.VehicleType.Description)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Brand.Description)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Brand.Description)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Model)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Model)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Plaque)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Plaque)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Line)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Line)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Remarks)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Remarks)
-                </dd>
-            </dl>
-        </div>
-        <div class="col-md-4">
-            <img src="@Model.ImageFullPath" style="width: 200px; height: 200px; max-width: 100%; height: auto;" />
-        </div>
-    </div>
-</div>
-<div>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="AddHistory" asp-route-id="@Model.Id" class="btn btn-primary">Adicionar Historia</a>
-    }
-    <a asp-action="EditVehicle" asp-route-id="@Model.Id" class="btn btn-warning">Editar Vehículo</a>
-    <a asp-action="Details" asp-route-id="@Model.User.Id" class="btn btn-success">Regresar</a>
-</div>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/DetailVehicleStyle.css" />
+<br />
 <br />
 
+<div class="container_two">
+
+    <div>
+        <h4 class="panel-title2">Vehiculo</h4>
+
+        <div class="row">
+            <div class="col-md-8 info">
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.VehicleType.Description)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.VehicleType.Description)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Brand.Description)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Brand.Description)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Model)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Model)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Plaque)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Plaque)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Line)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Line)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Remarks)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Remarks)
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-4 foto">
+                <img src="@Model.ImageFullPath" id="imguser" />
+            </div>
+            <br />
+           
+            <div class="botones">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="AddHistory" asp-route-id="@Model.Id" id="btn1" class="btn btn-link"><span>Adicionar Historia</span><span><i class="fas fa-plus"></i></span></a>
+                }
+                <a asp-action="EditVehicle" asp-route-id="@Model.Id" class="btn btn-link"><span>Editar Vehiculo</span><span><i class="fas fa-edit"></i></span></a>
+                <a asp-action="Details" asp-route-id="@Model.User.Id" id="btn2" class="btn btn-link"><span>Regresar</span><span><i class="fas fa-undo-alt"></i></span></a>
+
+
+
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <br />
+</div>
+
+<br />
+<br />
+<br />
+<br />
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Historias</h3>
+                <div class="multiselect">
+                    <div class="selectBox" onclick="showCheckboxes()">
+                        <select>
+                            <option>Filtro</option>
+                        </select>
+                        <div class="overSelect"></div>
+                    </div>
+                    <div id="checkboxes">
+                        <label for="one"><input type="checkbox" id="one" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().DateLocal)</label>
+                        <label for="two"><input type="checkbox" id="two" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().User.FullName)</label>
+                        <label for="three"><input type="checkbox" id="three" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().Mileage)</label>
+                        <label for="four"><input type="checkbox" id="four" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().Remarks)</label>
+                        <label for="five"><input type="checkbox" id="five" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().DetailsCount)</label>
+                        <label for="six"><input type="checkbox" id="six" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().TotalLabor)</label>
+                        <label for="seven"><input type="checkbox" id="seven" checked /> @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().TotalSpareParts)</label>
+                        <label for="eight"><input type="checkbox" id="eight" checked />  @Html.DisplayNameFor(model => model.Histories.FirstOrDefault().Total)</label>
+
+                    </div>
+                </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+                <script>
+                    var expanded = false;
+                    function showCheckboxes() {
+                        var checkboxes = document.getElementById("checkboxes");
+                        if (!expanded) {
+                            checkboxes.style.display = "block";
+                            expanded = true;
+                        } else {
+                            checkboxes.style.display = "none";
+                            expanded = false;
+                        }
+                    }
+
+
+
+                    $("#one").on("click", function () {
+
+                        $("th:nth-child(1)").toggle();
+                        $('td:nth-child(1)').toggle();
+
+                    });
+
+                    $("#two").on("click", function () {
+
+                        $("th:nth-child(2)").toggle();
+                        $('td:nth-child(2)').toggle();
+
+                    });
+
+                    $("#three").on("click", function () {
+
+                        $("th:nth-child(3)").toggle();
+                        $('td:nth-child(3)').toggle();
+
+                    });
+
+                    $("#four").on("click", function () {
+
+                        $("th:nth-child(4)").toggle();
+                        $('td:nth-child(4)').toggle();
+
+                    });
+
+                    $("#five").on("click", function () {
+
+                        $("th:nth-child(5)").toggle();
+                        $('td:nth-child(5)').toggle();
+
+                    });
+
+                    $("#six").on("click", function () {
+
+                        $("th:nth-child(6)").toggle();
+                        $('td:nth-child(6)').toggle();
+
+                    });
+                    $("#seven").on("click", function () {
+
+                        $("th:nth-child(7)").toggle();
+                        $('td:nth-child(7)').toggle();
+
+                    });
+                    $("#eight").on("click", function () {
+
+                        $("th:nth-child(8)").toggle();
+                        $('td:nth-child(8)').toggle();
+
+                    });
+                </script>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive table-striped" id="MyTable">
@@ -134,13 +241,17 @@
                                 <td>
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <a asp-action="EditHistory" asp-route-id="@item.Id" class="btn btn-warning">Editar</a>
+                                        <a asp-action="EditHistory" asp-route-id="@item.Id" class="btn btn-warning"><span>Editar</span><span><i class="fas fa-edit"></i></span></a>
                                     }
-                                    <a asp-action="DetailsHistory" asp-route-id="@item.Id" class="btn btn-info">Detalle<i class="glyphicon glyphicon-align-justify"></i></a>
+                                    <a asp-action="DetailsHistory" asp-route-id="@item.Id" class="btn btn-dark"><span>Detalle</span><span><i class="fas fa-list"></i></span></a>
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog">Borrar</button>
+                                        <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><span>Borrar</span><span><i class="fas fa-trash"></i></span></button>
                                     }
+
+
+
+
                                 </td>
                             </tr>
                         }
@@ -150,7 +261,9 @@
         </div>
     </div>
 </div>
-
+<br />
+<br />
+<br />
 <partial name="_DeleteDialog" />
 
 @section Scripts {

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Vehicles.API.Data;
 using Vehicles.API.Data.Entities;
@@ -67,7 +69,7 @@ namespace Vehicles.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult NotAuthorized()
@@ -89,8 +91,39 @@ namespace Vehicles.API.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddUserViewModel model)
         {
+
+
+
             if (ModelState.IsValid)
             {
+
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+                User usertwo = await _context.Users
+            .FirstOrDefaultAsync(x => x.Document == model.Document);
+                if (usertwo != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Documento de identidad ya esta registrado");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
                 Guid imageId = Guid.Empty;
 
                 if (model.ImageFile != null)
@@ -113,16 +146,28 @@ namespace Vehicles.API.Controllers
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendMail(model.Username, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
-                    $"Para habilitar el usuario, " +
-                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+
+                Response response = _mailHelper.SendMail(model.Username, 
+                    "Vehicles - Confirmación de cuenta",
+                    $"<div style='position: relative; display: inline-block; text-align: center; '>"+
+                        
+                        $"<h1 style=' color: #FF3600 !important;'>Taller Automotriz - Confirmación de cuenta</h1>" +
+                        $"<p style='font-size: 16px'>Para habilitar el usuario,por favor hacer clic en el siguiente enlace:  </p>"+
+                        $"</br>"+
+                        $"<a href = \"{tokenLink}\" style='background-color: #FF3600 ; color: white;  padding: 5px; border-radius: 5px; height: 60px; width: 150px; text-decoration:none; margin:5px;'>Confirmar Email</a>" +
+                    $"</div>");
+                    
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "Las instrucciones para habilitar su cuenta han sido enviadas al correo.";
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
                     return View(model);
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
+
+
+
 
 
             }
@@ -162,6 +207,23 @@ namespace Vehicles.API.Controllers
         {
             if (ModelState.IsValid)
             {
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
                 Guid imageId = model.ImageId;
 
                 if (model.ImageFile != null)
@@ -237,6 +299,71 @@ namespace Vehicles.API.Controllers
             }
 
             return View();
+        }
+
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _userHelper.GetUserAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "El correo ingresado no corresponde a ningún usuario.");
+                    return View(model);
+                }
+
+                string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                string link = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+                _mailHelper.SendMail(model.Email, "Vehicles - Reseteo de contraseña",
+
+                     $"<div style='position: relative; display: inline-block; text-align: center; '>" +
+
+                        $"<h1 style=' color: #FF3600 !important;'>Taller Automotriz - Reseteo de contraseña</h1>" +
+                        $"<p style='font-size: 16px'>Para establecer una nueva contraseña haga clic en el siguiente enlace:  </p>" +
+                        $"</br>" +
+                        $"<a href = \"{link}\" style='background-color: #FF3600 ; color: white;  padding: 5px; border-radius: 5px; height: 60px; width: 150px; text-decoration:none; margin:5px;'>Cambio de Contraseña</a>" +
+                    $"</div>");
+                ViewBag.Message = "Las instrucciones para el cambio de contraseña han sido enviadas a su email.";
+                return View();
+
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            User user = await _userHelper.GetUserAsync(model.UserName);
+            if (user != null)
+            {
+                IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    ViewBag.Message = "Contaseña cambiada.";
+                    return View();
+                }
+
+                ViewBag.Message = "Error cambiando la contraseña.";
+                return View(model);
+            }
+
+            ViewBag.Message = "Usuario no encontrado.";
+            return View(model);
         }
     }
 }

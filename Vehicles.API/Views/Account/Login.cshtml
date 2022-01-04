@@ -2,42 +2,77 @@
 @{
     ViewData["Title"] = "Login";
 }
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/LoginStyle.css" />
 
-<h2>Inicio de Sesión</h2>
+
 
 <div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly"></div>
+    
 
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-warning"></span>
+    <div class="col-md-12"  >
+
+        <form method="post">
+
+            <h2>Inicio de Sesión</h2>
+            <br />
+            <div asp-validation-summary="ModelOnly" class="errorinicio"></div>
+
+            <div class="form-group2">
+                <div class="form-group">
+                    <span class="iconito"><i class="fas fa-user"></i></span>
+                    <input asp-for="Username" class="form-control" placeholder="Usuario" />
+                </div>
+                <div>
+                    <span asp-validation-for="Username" class="text-warning"></span>
+                </div>
+
             </div>
             <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
 
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-warning"></span>
+            <div class="form-group2">
+                <div class="form-group">
+                    <span class="iconito"><i class="fas fa-unlock-alt"></i></span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Contraseña" />
+                </div>
+                <div>
+                    <span asp-validation-for="Password" class="text-warning"></span>
+                </div>
+
+
             </div>
 
             <div class="form-group">
                 <div class="form-check">
-                    <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label"></label>
+
+                    <label asp-for="RememberMe" class="form-check-label" id="c1">
+                        Recordarme
+                        <input asp-for="RememberMe" type="checkbox" class="form-check-input" checked="checked">
+                        <span asp-validation-for="RememberMe" class="checkmark"></span>
+                    </label>
                 </div>
-                <span asp-validation-for="RememberMe" class="text-warning"></span>
+
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Iniciar Sesión" class="btn btn-primary" />
-                <a asp-action="Register" class="btn btn-secondary">Registrar Nuevo Usuario</a>
+                <button type="submit" value="" class="btn btn-primary"><span>Iniciar Sesión</span><span><i class="fas fa-sign-in-alt"></i></span> </button>
+
+
+            </div>
+            <div class="form-group form-group-2">
+
+                <a asp-action="Register" class="btn btn-secondary"><span>Nuevo Usuario</span><span><i class="fas fa-user-plus"></i></span></a>
+
+            </div>
+            <div class="form-group">
+
                 <hr />
                 <a asp-action="RecoverPassword" class="btn btn-link">¿Olvidaste tu contraseña?</a>
+                
             </div>
+
         </form>
+
     </div>
 </div>
 

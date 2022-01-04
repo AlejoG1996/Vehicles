@@ -3,48 +3,175 @@
 @{
     ViewData["Title"] = "Register";
 }
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/RegisterStyle.css" />
 
-<h2>Registrar</h2>
-
-<h4>Usuario</h4>
 <hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Register" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
 
-            <partial name="_User" />
+<div class="row_2">
+    <div class="row_1">
+        <div class="col-md-12">
 
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+            <form asp-action="Register" enctype="multipart/form-data">
 
-            <div class="form-group">
-                <label asp-for="PasswordConfirm" class="control-label"></label>
-                <input asp-for="PasswordConfirm" class="form-control" />
-                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
-            </div>
+                <div class="viewphoto">
+                    <img id="imagenPrevisualizacion" src="~/images/noimage.png" />
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Registrar" class="btn btn-primary" />
-            </div>
-        </form>
+
+                <h2>Nuevo Usuario</h2>
+
+                <div asp-validation-summary="ModelOnly" class="errorinicio"></div>
+                <div class="form-group">
+
+                    <input asp-for="Username" class="form-control" placeholder="Correo Electronico" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+
+
+                <div class="row">
+
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+
+                            <input asp-for="FirstName" class="form-control" placeholder="Nombres" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+
+                            <input asp-for="LastName" class="form-control" placeholder="Apellidos" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+
+                            <select asp-for="DocumentTypeId" asp-items="Model.DocumentTypes" class="form-control"></select>
+                            <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+
+                            <input asp-for="Document" class="form-control" placeholder="Número de Documento" />
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+                       
+
+                        
+
+                    </div>
+                    <div class="col-md-6 ">
+
+                        <div class="form-group">
+
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Número Celular" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <input asp-for="Address" class="form-control" placeholder="Dirección" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+
+                            <input asp-for="Password" class="form-control" placeholder="Contraseña" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+
+                            <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmar Contraseña" />
+                            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                        </div>
+
+
+
+
+                    </div>
+
+                </div>
+
+                <div class="form-group2">
+
+
+                    <input asp-for="ImageFile" class="form-control" type="file" id="real-file" hidden="hidden" accept="image/*" />
+                    <button type="button" id="custom-button">Subir Foto</button>
+                    <span asp-validation-for="ImageFile" class="text-danger" id="custom-text">sin foto</span>
+                    <script type="text/javascript">
+                        const realFileBtn = document.getElementById("real-file");
+                        const customBtn = document.getElementById("custom-button");
+                        const customTxt = document.getElementById("custom-text");
+                        var img = document.getElementById("imagenPrevisualizacion");
+
+                        customBtn.addEventListener("click", function () {
+                            realFileBtn.click();
+                        });
+
+                        realFileBtn.addEventListener("change", function () {
+                            if (realFileBtn.value) {
+                                customTxt.innerHTML = realFileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+                            } else {
+                                customTxt.innerHTML = "No se ha cargado ninguna imagen";
+                            }
+                        })
+
+                        const $seleccionArchivos = document.querySelector("#real-file"),
+                            $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+
+                        // Escuchar cuando cambie
+                        $seleccionArchivos.addEventListener("change", () => {
+                            // Los archivos seleccionados, pueden ser muchos o uno
+                            const archivos = $seleccionArchivos.files;
+                            // Si no hay archivos salimos de la función y quitamos la imagen
+                            if (!archivos || !archivos.length) {
+                                $imagenPrevisualizacion.src = "";
+                                return;
+                            }
+
+
+                            var filePath = realFileBtn.value;
+                            var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
+                            if (!allowedExtensions.exec(filePath)) {
+
+
+
+                            } else {
+                                // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+                                const primerArchivo = archivos[0];
+                                // Lo convertimos a un objeto de tipo objectURL
+                                const objectURL = URL.createObjectURL(primerArchivo);
+                                // Y a la fuente de la imagen le ponemos el objectURL
+                                $imagenPrevisualizacion.src = objectURL;
+                            }
+                        });
+                    </script>
+                </div>
+
+
+
+                <div class="form-group">
+                    <button type="submit" value="Registrarse" class="btn btn-primary "><span>Registrarse</span><span><i class="fas fa-user-plus"></i></span> </button>
+                    <a asp-action="Login" class="btn btn-secondary"><span>Iniciar sesión</span><span><i class="fas fa-sign-in-alt"></i></span></a>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="text-success">
+            <p>
+                @ViewBag.Message
+            </p>
+        </div>
     </div>
+
 </div>
 
-<div class="text-success">
-    <p>
-        @ViewBag.Message
-    </p>
-</div>
+
 
 
 @section Scripts {
