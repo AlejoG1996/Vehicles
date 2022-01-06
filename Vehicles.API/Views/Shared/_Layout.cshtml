@@ -72,15 +72,22 @@
 
 
 
+                        <li class="menu__item">
+                            <a class="menu__link" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
+                        </li>
+                        <li class="menu__item ">
+                            <a class="menu__link submenu" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a>
+                        </li>
+
 
                     }
 
-                    <li class="menu__item">
-                        <a class="menu__link" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
-                    </li>
-                    <li class="menu__item ">
-                        <a class="menu__link submenu" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a>
-                    </li>
+                    else
+                    {
+                        <li class="menu__item ">
+                            <a class="menu__link submenu" asp-area="" asp-controller="Account" asp-action="Login">Iniciar Sesión</a>
+                        </li>
+                    }
 
                 </ul>
 
