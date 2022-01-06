@@ -309,11 +309,30 @@ form {
     .btn-secondary {
         width: 99% !important;
     }
+
+    .row {
+        width: 80% !important;
+        max-width: 800px !important;
+    }
+
+    .row2 {
+        width: 80% !important;
+        max-width: 800px !important;
+    }
 }
 
 @media screen and (max-width:578px) {
     h2 {
         font-size: 17px;
+    }
+    .row {
+        width: 80% !important;
+        max-width: 800px !important;
+    }
+
+    .row2 {
+        width: 80% !important;
+        max-width: 800px !important;
     }
 }
 
@@ -332,7 +351,13 @@ form {
     }
 
     .row {
-        height: 450px !important;
+        width: 80% !important;
+        max-width: 800px !important;
+    }
+
+    .row2 {
+        width: 80% !important;
+        max-width: 800px !important;
     }
 
     h1 {
