@@ -341,3 +341,9 @@ hr {
         font-size: 24px;
     }
 }
+
+@media screen and (max-width:800px) {
+    .row_1{
+        width: 85% !important;
+    }
+}
