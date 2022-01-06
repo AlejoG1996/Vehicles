@@ -345,5 +345,6 @@ hr {
 @media screen and (max-width:800px) {
     .row_1{
         width: 85% !important;
+
     }
 }
