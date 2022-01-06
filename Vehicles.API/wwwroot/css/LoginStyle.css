@@ -338,14 +338,23 @@ hr {
     transform: rotate(45deg) !important;
 }
 
-@media  screen  and  (max-width:511px){
+@media  screen  and  (max-width:800px){
     h2{
         font-size:28px;
+    }
+
+    .row {
+        width: 85% !important;
+        max-width: 850px !important;
     }
 }
 
 @media screen and (max-width:390px) {
     h2 {
         font-size: 20px;
+    }
+    .row {
+        width: 85% !important;
+        max-width: 850px !important;
     }
 }
