@@ -705,7 +705,7 @@ h4 {
 @media screen and (max-width:580px) {
 
     h4 {
-        font-size: 16px !important;
+        font-size: 18px !important;
     }
 
     .text-danger {
@@ -716,7 +716,7 @@ h4 {
 @media screen and (max-width:480px) {
 
     h4 {
-        font-size: 11px !important;
+        font-size: 13px !important;
     }
 
     .text-danger {
