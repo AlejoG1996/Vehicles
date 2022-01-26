@@ -1,0 +1,205 @@
+﻿@model Vehicles.API.Models.UserViewModel
+@{
+    ViewData["Title"] = "Edit2";
+}
+
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+<link rel="stylesheet" href="~/css/UserStyle.css" />
+
+
+<div class="row_1 tam">
+    <div class="col-md-12">
+        <form asp-action="Edit2" enctype="multipart/form-data">
+
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageId" />
+            <input type="hidden" asp-for="Email" />
+
+            <div class="viewphoto">
+                <img id="imagenPrevisualizacion" src="@Model.ImageFullPath" />
+            </div>
+            <br />
+            <h2>Editar Mecanico</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+
+                <div class="col-md-6 ">
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="FirstName" class="form-control" />
+                        </div>
+                        <div>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="LastName" class="form-control">
+
+                        </div>
+                        <div>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group2">
+                        <div class="form-group">
+
+                            <label asp-for="DocumentTypeId" class="control-label"></label>
+
+                        </div>
+                        <div class="form-group">
+
+                            <select asp-for="DocumentTypeId" asp-items="Model.DocumentTypes" class="form-control" id="dct"></select>
+
+                        </div>
+                        <div>
+                            <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-6 ">
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="Document" class="control-label"></label>
+
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Document" class="form-control" />
+
+                        </div>
+                        <div>
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="Address" class="control-label"></label>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Address" class="form-control" />
+                        </div>
+                        <div>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group2">
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="control-label"></label>
+
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="PhoneNumber" class="form-control" />
+
+                        </div>
+                        <div>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+
+
+            <div class="form-group3">
+
+
+                <input asp-for="ImageFile" class="form-control" type="file" id="real-file" hidden="hidden" accept="image/*" />
+                <button type="button" id="custom-button">Subir Foto</button>
+                <span asp-validation-for="ImageFile" class="text-danger" id="custom-text">sin foto</span>
+                <script type="text/javascript">
+                    const realFileBtn = document.getElementById("real-file");
+                    const customBtn = document.getElementById("custom-button");
+                    const customTxt = document.getElementById("custom-text");
+                    var img = document.getElementById("imagenPrevisualizacion");
+
+                    customBtn.addEventListener("click", function () {
+                        realFileBtn.click();
+                    });
+
+                    realFileBtn.addEventListener("change", function () {
+                        if (realFileBtn.value) {
+                            customTxt.innerHTML = realFileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+                        } else {
+                            customTxt.innerHTML = "No se ha cargado ninguna imagen";
+                        }
+                    })
+
+                    const $seleccionArchivos = document.querySelector("#real-file"),
+                        $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+
+                    // Escuchar cuando cambie
+                    $seleccionArchivos.addEventListener("change", () => {
+                        // Los archivos seleccionados, pueden ser muchos o uno
+                        const archivos = $seleccionArchivos.files;
+                        // Si no hay archivos salimos de la función y quitamos la imagen
+                        if (!archivos || !archivos.length) {
+                            $imagenPrevisualizacion.src = "";
+                            return;
+                        }
+
+
+                        var filePath = realFileBtn.value;
+                        var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
+                        if (!allowedExtensions.exec(filePath)) {
+
+
+
+                        } else {
+                            // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+                            const primerArchivo = archivos[0];
+                            // Lo convertimos a un objeto de tipo objectURL
+                            const objectURL = URL.createObjectURL(primerArchivo);
+                            // Y a la fuente de la imagen le ponemos el objectURL
+                            $imagenPrevisualizacion.src = objectURL;
+                        }
+                    });
+                </script>
+            </div>
+
+
+            <div class="form-group">
+                <button type="submit" value="" class="btn btn-success"><span>Guardar</span><span><i class="fas fa-download"></i></span> </button>
+                <a asp-action="Index2" class="btn btn-secondary"><span>Regresar</span><span><i class="fas fa-undo"></i></span></a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+<br />
+<br />
+<br />
+<br />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

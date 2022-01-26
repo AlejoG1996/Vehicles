@@ -13,50 +13,50 @@ using Vehicles.API.Data.Entities;
 namespace Vehicles.API.Controllers.API
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)] 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     
-    public class ProceduresController : ControllerBase
+    public class BrandsController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public ProceduresController(DataContext context)
+        public BrandsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Procedures
+        // GET: api/Brands
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Procedure>>> GetProcedures()
+        public async Task<ActionResult<IEnumerable<Brand>>> GetBrands()
         {
-            return await _context.Procedures.OrderBy(x => x.Description).ToListAsync();
+            return await _context.Brands.OrderBy(x=> x.Description).ToListAsync();
         }
 
-        // GET: api/Procedures/5
+        // GET: api/Brands/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Procedure>> GetProcedure(int id)
+        public async Task<ActionResult<Brand>> GetBrand(int id)
         {
-            var procedure = await _context.Procedures.FindAsync(id);
+            var brand = await _context.Brands.FindAsync(id);
 
-            if (procedure == null)
+            if (brand == null)
             {
                 return NotFound();
             }
 
-            return procedure;
+            return brand;
         }
 
-        // PUT: api/Procedures/5
+        // PUT: api/Brands/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProcedure(int id, Procedure procedure)
+        public async Task<IActionResult> PutBrand(int id, Brand brand)
         {
-            if (id != procedure.Id)
+            if (id != brand.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(procedure).State = EntityState.Modified;
+            _context.Entry(brand).State = EntityState.Modified;
 
             try
             {
@@ -67,38 +67,8 @@ namespace Vehicles.API.Controllers.API
             {
                 if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                 {
-                   return BadRequest( "Ya existe este procedimiento.");
-                }
-                else
-                {
-                    return BadRequest( dbUpdateException.InnerException.Message);
-                }
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
-
-           
-        }
-
-        // POST: api/Procedures
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Procedure>> PostProcedure(Procedure procedure)
-        {
-            _context.Procedures.Add(procedure);
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetProcedure", new { id = procedure.Id }, procedure);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe este procedimiento.");
+                    return BadRequest("Ya existe esta marca.");
+                    
                 }
                 else
                 {
@@ -109,27 +79,59 @@ namespace Vehicles.API.Controllers.API
             {
                 return BadRequest(exception.Message);
             }
+
+            
         }
 
-        // DELETE: api/Procedures/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProcedure(int id)
+        // POST: api/Brands
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Brand>> PostBrand(Brand brand)
         {
-            var procedure = await _context.Procedures.FindAsync(id);
-            if (procedure == null)
+            _context.Brands.Add(brand);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetBrand", new { id = brand.Id }, brand);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                {
+                    return BadRequest("Ya existe esta marca.");
+
+                }
+                else
+                {
+                    return BadRequest(dbUpdateException.InnerException.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+
+            
+
+            
+        }
+
+        // DELETE: api/Brands/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBrand(int id)
+        {
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null)
             {
                 return NotFound();
             }
 
-            _context.Procedures.Remove(procedure);
+            _context.Brands.Remove(brand);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ProcedureExists(int id)
-        {
-            return _context.Procedures.Any(e => e.Id == id);
-        }
+        
     }
 }

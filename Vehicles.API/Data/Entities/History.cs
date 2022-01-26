@@ -11,6 +11,7 @@ namespace Vehicles.API.Data.Entities
     {
         public int Id { get; set; }
 
+        [JsonIgnore]
         [Display(Name = "Vehículo")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Vehicle Vehicle { get; set; }

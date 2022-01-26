@@ -46,6 +46,15 @@ namespace Vehicles.API.Controllers
                 .ToListAsync());
         }
 
+        public async Task<IActionResult> Index2()
+        {
+            return View(await _context.Users
+                .Include(x => x.DocumentType)
+                .Include(x => x.Vehicles)
+                .Where(x => x.UserType == UserType.Admin)
+                .ToListAsync());
+        }
+
 
         public IActionResult Create()
         {
@@ -202,20 +211,17 @@ namespace Vehicles.API.Controllers
             {
                 return NotFound();
             }
-            try
-            {
+
+
+            if(user.ImageId != Guid.Empty)
+            { 
                 await _blobHelper.DeleteBlobAsync(user.ImageId, "users");
             }
-            catch { }
-
-
-            
-                
             
 
-            
-            
 
+
+          
             await _userHelper.DeleteUserAsync(user);
             return RedirectToAction(nameof(Index));
         }
@@ -879,6 +885,178 @@ namespace Vehicles.API.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(DetailsHistory), new { id = detail.History.Id });
         }
+
+        public IActionResult Create2()
+        {
+            UserViewModel model = new UserViewModel
+            {
+                DocumentTypes = _combosHelper.GetComboDocumentTypes()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create2(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+                User usertwo = await _context.Users
+               .FirstOrDefaultAsync(x => x.Document == model.Document);
+                if (usertwo != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Documento de identidad ya esta registrado");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+
+                User usertwos = await _context.Users
+            .FirstOrDefaultAsync(x => x.Email == model.Email);
+                if (usertwos != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Email ya esta registrado");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+                Guid imageId = Guid.Empty;
+
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                }
+
+
+                User user = await _converterHelper.ToUserAsync(model, imageId, true);
+                user.UserType = UserType.Admin;
+                await _userHelper.AddUserAsync(user, "123456");
+                await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
+
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendMail(model.Email, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+
+                return RedirectToAction(nameof(Index2));
+            }
+
+            model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> Edit2(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            User user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            UserViewModel model = _converterHelper.ToUserViewModel(user);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit2(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string filename = "";
+                if (model.ImageFile == null)
+                {
+
+                    filename = "noexiste.png";
+                }
+                else
+                {
+                    filename = model.ImageFile.FileName;
+                }
+
+                if (!Regex.IsMatch(filename.ToLower(), @"^.*\.(jpg|gif|png|jpeg)$"))
+                {
+                    ModelState.AddModelError(string.Empty, "la imagen debe ser tipo .jpg .gift .png .jpeg");
+                    model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+                    return View(model);
+                }
+
+
+                Guid imageId = model.ImageId;
+                if (model.ImageFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                }
+
+                User user = await _converterHelper.ToUserAsync(model, imageId, false);
+                await _userHelper.UpdateUserAsync(user);
+                return RedirectToAction(nameof(Index2));
+                
+            }
+
+            model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+            return View(model);
+        }
+
+        public async Task<IActionResult> Delete2(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+
+            User user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+            if (user.ImageId != Guid.Empty)
+            {
+                await _blobHelper.DeleteBlobAsync(user.ImageId, "users");
+            }
+
+
+
+
+
+            await _userHelper.DeleteUserAsync(user);
+            return RedirectToAction(nameof(Index2));
+        }
+
     }
 
 }

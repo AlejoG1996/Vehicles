@@ -13,50 +13,49 @@ using Vehicles.API.Data.Entities;
 namespace Vehicles.API.Controllers.API
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)] 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
-    
-    public class ProceduresController : ControllerBase
+    public class VehicleTypesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public ProceduresController(DataContext context)
+        public VehicleTypesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Procedures
+        // GET: api/VehicleTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Procedure>>> GetProcedures()
+        public async Task<ActionResult<IEnumerable<VehicleType>>> GetVehicleTypes()
         {
-            return await _context.Procedures.OrderBy(x => x.Description).ToListAsync();
+            return await _context.VehicleTypes.OrderBy(x=> x.Description).ToListAsync();
         }
 
-        // GET: api/Procedures/5
+        // GET: api/VehicleTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Procedure>> GetProcedure(int id)
+        public async Task<ActionResult<VehicleType>> GetVehicleType(int id)
         {
-            var procedure = await _context.Procedures.FindAsync(id);
+            var vehicleType = await _context.VehicleTypes.FindAsync(id);
 
-            if (procedure == null)
+            if (vehicleType == null)
             {
                 return NotFound();
             }
 
-            return procedure;
+            return vehicleType;
         }
 
-        // PUT: api/Procedures/5
+        // PUT: api/VehicleTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProcedure(int id, Procedure procedure)
+        public async Task<IActionResult> PutVehicleType(int id, VehicleType vehicleType)
         {
-            if (id != procedure.Id)
+            if (id != vehicleType.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(procedure).State = EntityState.Modified;
+            _context.Entry(vehicleType).State = EntityState.Modified;
 
             try
             {
@@ -67,38 +66,8 @@ namespace Vehicles.API.Controllers.API
             {
                 if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                 {
-                   return BadRequest( "Ya existe este procedimiento.");
-                }
-                else
-                {
-                    return BadRequest( dbUpdateException.InnerException.Message);
-                }
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+                    return BadRequest("Ya existe este tipo de Vehiculo.");
 
-           
-        }
-
-        // POST: api/Procedures
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Procedure>> PostProcedure(Procedure procedure)
-        {
-            _context.Procedures.Add(procedure);
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetProcedure", new { id = procedure.Id }, procedure);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe este procedimiento.");
                 }
                 else
                 {
@@ -109,27 +78,57 @@ namespace Vehicles.API.Controllers.API
             {
                 return BadRequest(exception.Message);
             }
+
+           
         }
 
-        // DELETE: api/Procedures/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProcedure(int id)
+        // POST: api/VehicleTypes
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<VehicleType>> PostVehicleType(VehicleType vehicleType)
         {
-            var procedure = await _context.Procedures.FindAsync(id);
-            if (procedure == null)
+            _context.VehicleTypes.Add(vehicleType);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetVehicleType", new { id = vehicleType.Id }, vehicleType);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                {
+                    return BadRequest("Ya existe este tipo de Vehiculo.");
+
+                }
+                else
+                {
+                    return BadRequest(dbUpdateException.InnerException.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+
+          
+        }
+
+        // DELETE: api/VehicleTypes/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVehicleType(int id)
+        {
+            var vehicleType = await _context.VehicleTypes.FindAsync(id);
+            if (vehicleType == null)
             {
                 return NotFound();
             }
 
-            _context.Procedures.Remove(procedure);
+            _context.VehicleTypes.Remove(vehicleType);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ProcedureExists(int id)
-        {
-            return _context.Procedures.Any(e => e.Id == id);
-        }
+       
     }
 }
