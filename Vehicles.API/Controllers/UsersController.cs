@@ -15,7 +15,7 @@ using Vehicles.Common.Models;
 
 namespace Vehicles.API.Controllers
 {
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin, User")]
     public class UsersController: Controller
     {
 
@@ -1057,6 +1057,17 @@ namespace Vehicles.API.Controllers
             return RedirectToAction(nameof(Index2));
         }
 
+
+        public async Task<IActionResult> MyVehicles()
+        {
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Details), new { id = user.Id });
+        }
     }
 
 }
