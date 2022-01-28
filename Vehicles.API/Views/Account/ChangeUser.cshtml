@@ -106,6 +106,21 @@
 
                     <div class="form-group2">
                         <div class="form-group">
+                            <label asp-for="CountryCode" class="control-label"></label>
+
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="CountryCode" class="form-control" />
+
+                        </div>
+                        <div>
+                            <span asp-validation-for="CountryCode" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group2">
+                        <div class="form-group">
                             <label asp-for="PhoneNumber" class="control-label"></label>
 
                         </div>

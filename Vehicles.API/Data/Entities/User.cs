@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,12 @@ namespace Vehicles.API.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Document { get; set; }
 
+        [DefaultValue("57")]
+        [Display(Name = "Codigo País")]
+        [MaxLength(5, ErrorMessage = "El campo {0} no puede tener más de {1} carácteres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string CountryCode { get; set; }
+
         [Display(Name = "Dirección")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede tener más de {1} carácteres.")]
         public string Address { get; set; }
@@ -37,15 +44,23 @@ namespace Vehicles.API.Data.Entities
         public Guid ImageId { get; set; }
 
         [Display(Name = "Foto")]
-        public string ImageFullPath => ImageId == Guid.Empty
-
+        public string ImageFullPath => LoginType == LoginType.Email
+            ? ImageId == Guid.Empty
                 ? $"https://vehiclesapialejandrog.azurewebsites.net/images/noimage.png"
-                : $"https://vehiclesalejog.blob.core.windows.net/users/{ImageId}";
-           
+                : $"https://vehiclesalejog.blob.core.windows.net/users/{ImageId}"
+            : string.IsNullOrEmpty(SocialImageURL)
+                ? $"https://vehiclesapialejandrog.azurewebsites.net/images/noimage.png"
+                : SocialImageURL;
 
-       
 
-      
+
+
+
+        [Display(Name = "Foto")]
+        public string SocialImageURL { get; set; }
+
+        [Display(Name = "Tipo de login")]
+        public LoginType LoginType { get; set; }
 
         [Display(Name = "Tipo de usuario")]
         public UserType UserType { get; set; }

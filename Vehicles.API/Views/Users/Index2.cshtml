@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<Vehicles.API.Data.Entities.User>
 
 @{
-    ViewData["Title"] = "Index2";
+    ViewData["Title"] = "Index";
 }
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
@@ -26,7 +27,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Mecanicos</h3>
+                    <h3 class="panel-title">Usuarios</h3>
 
                     <div class="multiselect">
                         <div class="selectBox" onclick="showCheckboxes()">
@@ -43,6 +44,7 @@
                             <label for="five"><input type="checkbox" id="five" checked /> @Html.DisplayNameFor(model => model.PhoneNumber)</label>
                             <label for="six"><input type="checkbox" id="six" checked /> @Html.DisplayNameFor(model => model.VehiclesCount)</label>
                             <label for="seven"><input type="checkbox" id="seven" checked /> @Html.DisplayNameFor(model => model.ImageFullPath)</label>
+                            <label for="eih"><input type="checkbox" id="eih" checked /> @Html.DisplayNameFor(model => model.CountryCode)</label>
                         </div>
                     </div>
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -109,6 +111,14 @@
                             $('td:nth-child(7)').toggle();
 
                         });
+                        $("#eih").on("click", function () {
+
+                            $("#theigt").toggle();
+                            $('td:nth-child(8)').toggle();
+
+                        });
+
+
                     </script>
                 </div>
                 <div class="panel-body ">
@@ -130,11 +140,15 @@
                                 <th id="thfive">
                                     @Html.DisplayNameFor(model => model.PhoneNumber)
                                 </th>
+
                                 <th id="thsix">
                                     @Html.DisplayNameFor(model => model.VehiclesCount)
                                 </th>
                                 <th id="thseven">
                                     @Html.DisplayNameFor(model => model.ImageFullPath)
+                                </th>
+                                <th id="theigt">
+                                    @Html.DisplayNameFor(model => model.CountryCode)
                                 </th>
                                 <th></th>
                             </tr>
@@ -165,8 +179,11 @@
                                         <img src="@item.ImageFullPath" />
                                     </td>
                                     <td>
+                                        @Html.DisplayFor(modelItem => item.CountryCode)
+                                    </td>
+                                    <td>
                                         <a asp-action="Edit2" asp-route-id="@item.Id" class="btn btn-warning"><span>Editar</span><span><i class="fas fa-edit"></i></span></a>
-                           
+          
                                         <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><span>Borrar</span><span><i class="fas fa-trash"></i></span></button>
 
 
@@ -208,4 +225,3 @@
         });
     </script>
 }
-

@@ -122,6 +122,7 @@ namespace Vehicles.API.Helpers
             currentUser.Document = user.Document;
             currentUser.Address = user.Address;
             currentUser.ImageId = user.ImageId;
+            currentUser.CountryCode = user.CountryCode;
             currentUser.PhoneNumber = user.PhoneNumber;
             return await _userManager.UpdateAsync(currentUser);
         }

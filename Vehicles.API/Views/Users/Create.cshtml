@@ -16,7 +16,7 @@
                 </div>
                 <h2>Nuevo Usuario</h2>
                 <div asp-validation-summary="ModelOnly" class="text-danger errorinicio"></div>
-             
+
 
                 <div class="form-group2">
 
@@ -74,7 +74,7 @@
                         <div class="form-group2">
 
                             <div class="form-group">
-                                <input asp-for="Document" class="form-control" placeholder="Documento"/>
+                                <input asp-for="Document" class="form-control" placeholder="Documento" />
 
                             </div>
                             <div>
@@ -87,10 +87,10 @@
                         <div class="form-group2">
 
                             <div class="form-group">
-                                <input asp-for="Address" class="form-control" placeholder="Dirección" />
+                                <input asp-for="CountryCode" class="form-control" placeholder="Codigo del pais" />
                             </div>
                             <div>
-                                <span asp-validation-for="Address" class="text-danger"></span>
+                                <span asp-validation-for="CountryCode" class="text-danger"></span>
                             </div>
 
                         </div>
@@ -115,6 +115,16 @@
                     </div>
                 </div>
 
+                <div class="form-group2">
+
+                    <div class="form-group">
+                        <input asp-for="Address" class="form-control" placeholder="Dirección" />
+                    </div>
+                    <div>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                </div>
                 <div class="form-group3">
 
 

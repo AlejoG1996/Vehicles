@@ -87,10 +87,10 @@
                     <div class="form-group2">
 
                         <div class="form-group">
-                            <input asp-for="Address" class="form-control" placeholder="Dirección" />
+                            <input asp-for="CountryCode" class="form-control" placeholder="Codigo del pais" />
                         </div>
                         <div>
-                            <span asp-validation-for="Address" class="text-danger"></span>
+                            <span asp-validation-for="CountryCode" class="text-danger"></span>
                         </div>
 
                     </div>
@@ -113,8 +113,20 @@
 
 
                 </div>
+
+
             </div>
 
+            <div class="form-group2">
+
+                <div class="form-group">
+                    <input asp-for="Address" class="form-control" placeholder="Dirección" />
+                </div>
+                <div>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+            </div>
             <div class="form-group3">
 
 
@@ -122,52 +134,52 @@
                 <button type="button" id="custom-button">Subir Foto</button>
                 <span asp-validation-for="ImageFile" class="text-danger" id="custom-text">sin foto</span>
                 <script type="text/javascript">
-                        const realFileBtn = document.getElementById("real-file");
-                        const customBtn = document.getElementById("custom-button");
-                        const customTxt = document.getElementById("custom-text");
-                        var img = document.getElementById("imagenPrevisualizacion");
+                    const realFileBtn = document.getElementById("real-file");
+                    const customBtn = document.getElementById("custom-button");
+                    const customTxt = document.getElementById("custom-text");
+                    var img = document.getElementById("imagenPrevisualizacion");
 
-                        customBtn.addEventListener("click", function () {
-                            realFileBtn.click();
-                        });
+                    customBtn.addEventListener("click", function () {
+                        realFileBtn.click();
+                    });
 
-                        realFileBtn.addEventListener("change", function () {
-                            if (realFileBtn.value) {
-                                customTxt.innerHTML = realFileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
-                            } else {
-                                customTxt.innerHTML = "No se ha cargado ninguna imagen";
-                            }
-                        })
+                    realFileBtn.addEventListener("change", function () {
+                        if (realFileBtn.value) {
+                            customTxt.innerHTML = realFileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+                        } else {
+                            customTxt.innerHTML = "No se ha cargado ninguna imagen";
+                        }
+                    })
 
-                        const $seleccionArchivos = document.querySelector("#real-file"),
-                            $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
+                    const $seleccionArchivos = document.querySelector("#real-file"),
+                        $imagenPrevisualizacion = document.querySelector("#imagenPrevisualizacion");
 
-                        // Escuchar cuando cambie
-                        $seleccionArchivos.addEventListener("change", () => {
-                            // Los archivos seleccionados, pueden ser muchos o uno
-                            const archivos = $seleccionArchivos.files;
-                            // Si no hay archivos salimos de la función y quitamos la imagen
-                            if (!archivos || !archivos.length) {
-                                $imagenPrevisualizacion.src = "";
-                                return;
-                            }
-
-
-                            var filePath = realFileBtn.value;
-                            var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
-                            if (!allowedExtensions.exec(filePath)) {
+                    // Escuchar cuando cambie
+                    $seleccionArchivos.addEventListener("change", () => {
+                        // Los archivos seleccionados, pueden ser muchos o uno
+                        const archivos = $seleccionArchivos.files;
+                        // Si no hay archivos salimos de la función y quitamos la imagen
+                        if (!archivos || !archivos.length) {
+                            $imagenPrevisualizacion.src = "";
+                            return;
+                        }
 
 
+                        var filePath = realFileBtn.value;
+                        var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
+                        if (!allowedExtensions.exec(filePath)) {
 
-                            } else {
-                                // Ahora tomamos el primer archivo, el cual vamos a previsualizar
-                                const primerArchivo = archivos[0];
-                                // Lo convertimos a un objeto de tipo objectURL
-                                const objectURL = URL.createObjectURL(primerArchivo);
-                                // Y a la fuente de la imagen le ponemos el objectURL
-                                $imagenPrevisualizacion.src = objectURL;
-                            }
-                        });
+
+
+                        } else {
+                            // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+                            const primerArchivo = archivos[0];
+                            // Lo convertimos a un objeto de tipo objectURL
+                            const objectURL = URL.createObjectURL(primerArchivo);
+                            // Y a la fuente de la imagen le ponemos el objectURL
+                            $imagenPrevisualizacion.src = objectURL;
+                        }
+                    });
                 </script>
             </div>
 
