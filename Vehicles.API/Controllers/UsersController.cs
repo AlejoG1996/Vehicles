@@ -107,7 +107,7 @@ namespace Vehicles.API.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Email ya esta registrado");
                     model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
-                    return View(model);
+                    return View(model); 
                 }
                 Guid imageId = Guid.Empty;
 
